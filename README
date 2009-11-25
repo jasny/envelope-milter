@@ -1,0 +1,20 @@
+Envelope milter
+Sendmail/postfix pre-queue filter to check envelope sender against To header
+
+-----------------
+
+This milter is useful for MTA's dedicated for outbound mail. The MTA can filter e-mail to make
+sure only mail comming from autorized domains is relayed. This is a good messure against spammers
+abusing the system, through compromized MUAs, SASL accounts or trusted clients.
+
+This check is done against envelope sender. However the recipient will not see the envelope user,
+but the address in the To header. For e-mail comming from a MUA, we can expect the envelope sender
+to be the same as the To header, since an MUA should not be relaying e-mail.
+
+This milter defers all mail where the envelope sender is different than the To header.
+
+-----------------
+
+Mail with a blank a envelope sender is accepted. A deny rule in the mailserver can block these.
+
+Tested with Postfix 2.5

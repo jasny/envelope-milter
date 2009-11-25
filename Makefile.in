@@ -1,0 +1,50 @@
+# @configure_input@
+
+prefix =	@prefix@
+exec_prefix =	@exec_prefix@
+BINDIR =	@sbindir@
+MANDIR =	@mandir@
+
+CC =		@CC@
+CPPFLAGS =	@CPPFLAGS@ -I.
+CFLAGS =	@CFLAGS@
+DEFS =		@DEFS@
+LDFLAGS =	@LDFLAGS@
+LIBS =		@LIBS@
+INSTALL =	@INSTALL@
+
+.c.o:
+	@rm -f $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(DEFS) -c $*.c
+
+SRC =		envelope-milter.c
+
+OBJ =		$(SRC:.c=.o)
+
+ALL =		envelope-milter
+
+CLEANFILES =	$(ALL) $(OBJ) a.out core core.* *.core
+
+all:		$(ALL)
+
+
+envelope-milter:	$(OBJ)
+	@rm -f $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+
+install:
+	-mkdir -p $(BINDIR)
+	$(INSTALL) -m 555 -o bin -g bin envelope-milter $(BINDIR)
+#	-mkdir -p $(MANDIR)/man8
+#	$(INSTALL) -m 444 -o bin -g bin envelope-milter.8 $(MANDIR)/man8
+
+
+clean:
+	rm -f $(CLEANFILES)
+
+distclean:
+	rm -f $(CLEANFILES) Makefile config.cache config.log config.status tags
+
+
+tags:
+	ctags -wtd *.c *.h
